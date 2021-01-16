@@ -6,14 +6,17 @@
  * @flow strict-local
  */
 
+import 'react-native-gesture-handler';
 import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import Main from './src/Main';
+import Login from './src/Login';
 
 const App = () => {
   return (
-    <>
-      <Main />
-    </>
+    <NavigationContainer>
+      <Login />
+    </NavigationContainer>
   );
 };
 
