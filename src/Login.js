@@ -1,14 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
-
+import CheckBox from '@react-native-community/checkbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Login = () => {
+const Login = ({navigation}) => {
   const [buddyId, setBuddyId] = useState('');
   const [password, setPassword] = useState('');
   const [alertId, setAlertId] = useState(false);
   const [alertPw, setAlertPw] = useState(false);
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
   // id check
   const doesIdIsCorrect = (id) => {
@@ -20,7 +22,9 @@ const Login = () => {
 
   // password check
   const doesPasswordIsCorrect = (pw) => {
-    return pw.length > 0;
+    if (pw) {
+      return pw.length > 0;
+    }
   };
   const renderPasswordFeedbackMessage = () => {
     return <Text style={styles.invalid}>Enter a password</Text>;
@@ -28,15 +32,65 @@ const Login = () => {
 
   const postLogin = () => {
     if (!doesIdIsCorrect(buddyId)) {
-      console.log('budy!!', {buddyId, password});
+      console.log('budy!!', {buddyId, password, isChecked: toggleCheckBox});
       setAlertId(true);
     } else if (!doesPasswordIsCorrect(password)) {
-      console.log('PW!', {buddyId, password});
+      console.log('PW!', {buddyId, password, isChecked: toggleCheckBox});
       setAlertPw(true);
     } else if (buddyId && password) {
-      console.log('okey');
+      console.log('okey', {buddyId, password, isChecked: toggleCheckBox});
+
+      if (toggleCheckBox) {
+        rememberUser({
+          id: buddyId,
+          pw: password,
+          checked: toggleCheckBox,
+        });
+      } else {
+        forgetUser();
+      }
+
+      // 200 status 받으면
+      navigation.navigate('RestaurantList');
     }
   };
+
+  // rememberme function
+  const rememberUser = async ({id, pw, checked}) => {
+    try {
+      const jsonValue = JSON.stringify({id, pw, checked});
+      await AsyncStorage.setItem('@storage_key', jsonValue);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getRememberedUser = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@storage_key');
+      return jsonValue !== null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const forgetUser = async () => {
+    try {
+      await AsyncStorage.removeItem('@storage_key');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const userData = getRememberedUser();
+    userData.then((data) => {
+      console.log('work?', data);
+      if (data) {
+        setBuddyId(data.id);
+        setPassword(data.pw);
+        setToggleCheckBox(data.checked);
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -65,9 +119,16 @@ const Login = () => {
           style={styles.input}
         />
         {alertPw && renderPasswordFeedbackMessage()}
-        <TextInput style={styles.text} type="">
-          Remember me
-        </TextInput>
+        <View style={styles.check}>
+          <CheckBox
+            style={styles.checkbox}
+            value={toggleCheckBox}
+            onValueChange={(newValue) => {
+              setToggleCheckBox(newValue);
+            }}
+          />
+          <Text style={styles.text}>Remember me</Text>
+        </View>
       </View>
       <View style={styles.btnBox}>
         <TouchableOpacity onPress={postLogin}>
@@ -110,9 +171,14 @@ const styles = StyleSheet.create({
   },
   invalid: {color: '#F50B02', fontSize: 15},
 
+  check: {
+    flexDirection: 'row',
+  },
+  checkbox: {color: '#757575'},
   text: {
     fontSize: 19,
     color: '#757575',
+    marginTop: 2,
   },
 
   btnBox: {flex: 2},
