@@ -9,9 +9,9 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Main = () => {
+const Main = ({navigation}) => {
   const onLogin = () => {
-    console.log('go to login page');
+    navigation.navigate('Login');
   };
 
   const onAppleLogin = () => {

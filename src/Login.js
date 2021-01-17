@@ -7,9 +7,35 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 const Login = () => {
   const [buddyId, setBuddyId] = useState('');
   const [password, setPassword] = useState('');
+  const [alertId, setAlertId] = useState(false);
+  const [alertPw, setAlertPw] = useState(false);
+
+  // id check
+  const doesIdIsCorrect = (id) => {
+    return id.length > 0;
+  };
+  const renderIdFeedbackMessage = () => {
+    return <Text style={styles.invalid}>Enter a buddyId</Text>;
+  };
+
+  // password check
+  const doesPasswordIsCorrect = (pw) => {
+    return pw.length > 0;
+  };
+  const renderPasswordFeedbackMessage = () => {
+    return <Text style={styles.invalid}>Enter a password</Text>;
+  };
 
   const postLogin = () => {
-    console.log('post login!', {id: buddyId, password});
+    if (!doesIdIsCorrect(buddyId)) {
+      console.log('budy!!', {buddyId, password});
+      setAlertId(true);
+    } else if (!doesPasswordIsCorrect(password)) {
+      console.log('PW!', {buddyId, password});
+      setAlertPw(true);
+    } else if (buddyId && password) {
+      console.log('okey');
+    }
   };
 
   return (
@@ -17,20 +43,28 @@ const Login = () => {
       <View style={styles.textBox}>
         <Text style={styles.title}>Log In with Buddy ID</Text>
         <TextInput
-          onChangeText={(text) => setBuddyId(text)}
+          onChangeText={(text) => {
+            setAlertId(false);
+            setBuddyId(text);
+          }}
           type="text"
           placeholder="Buddy ID (ex. YS0001)"
           value={buddyId}
           style={styles.input}
         />
+        {alertId && renderIdFeedbackMessage()}
         <TextInput
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text) => {
+            setAlertPw(false);
+            setPassword(text);
+          }}
           type="password"
           placeholder="Password"
           value={password}
           secureTextEntry={true}
           style={styles.input}
         />
+        {alertPw && renderPasswordFeedbackMessage()}
         <TextInput style={styles.text} type="">
           Remember me
         </TextInput>
@@ -74,6 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 3,
   },
+  invalid: {color: '#F50B02', fontSize: 15},
 
   text: {
     fontSize: 19,
