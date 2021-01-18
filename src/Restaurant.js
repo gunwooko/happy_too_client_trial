@@ -2,6 +2,12 @@ import React from 'react';
 import {StyleSheet, View, Text, ImageBackground} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import Menu from './Menu';
+import Infomation from './Infomation';
+import Review from './Review';
+
+const Tab = createMaterialTopTabNavigator();
 
 const Restaurant = ({route}) => {
   const {itemId, data} = route.params;
@@ -44,7 +50,11 @@ const Restaurant = ({route}) => {
         </View>
       </ImageBackground>
       <View style={styles.contentsContainer}>
-        <Text>navi menu, review, info</Text>
+        <Tab.Navigator>
+          <Tab.Screen name="Menu" component={Menu} />
+          <Tab.Screen name="Review" component={Review} />
+          <Tab.Screen name="Infomation" component={Infomation} />
+        </Tab.Navigator>
       </View>
     </View>
   );
