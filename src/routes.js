@@ -20,14 +20,14 @@ const Routes = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Restaurant"
-        component={Restaurant}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name="RestaurantList"
         component={RestaurantList}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Restaurant"
+        component={Restaurant}
+        options={{title: '', headerShown: false}}
       />
     </Stack.Navigator>
   );

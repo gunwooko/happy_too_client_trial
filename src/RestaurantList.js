@@ -1,12 +1,68 @@
-import {symbol} from 'prop-types';
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+import testData from './testData';
+
 const RestaurantList = ({navigation}) => {
   const [search, setSearch] = useState('');
+
+  const renderRestaurants = ({item}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Restaurant', {
+            itemID: item.key,
+            data: item,
+          });
+        }}
+        style={styles.contentContainer}>
+        <View style={styles.imgContainer}>
+          <Image
+            style={styles.img}
+            source={{
+              uri: item.src,
+            }}
+          />
+        </View>
+        <View style={styles.restaurantInfoBox}>
+          <Text style={styles.title}>{item.title}</Text>
+          <View style={styles.address}>
+            <FontAwesome5
+              name="map-marker-alt"
+              solid
+              style={styles.addressIcon}
+            />
+            <Text style={styles.addressText}>{item.address}</Text>
+          </View>
+          <View style={styles.details}>
+            <FontAwesome5 name="star" solid style={styles.scoreIcon} />
+            <Text style={styles.score}>
+              {item.score}
+              <Text style={styles.scoreAmount}>
+                ({item.scoreAmount}+) &middot;
+              </Text>
+            </Text>
+            <FontAwesome5 name="clock" light style={styles.clockIcon} />
+            <Text style={styles.time}>{item.time} min &middot;</Text>
+            <Text style={styles.deliveryFee}>
+              delivery fee ${item.deliveryFee} &middot; {item.distance}km away
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -16,45 +72,11 @@ const RestaurantList = ({navigation}) => {
         placeholder="search"
       />
       {}
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('Restaurant');
-        }}
-        style={styles.contentContainer}>
-        <View style={styles.imgContainer}>
-          <Image
-            style={styles.img}
-            source={{
-              uri:
-                'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-            }}
-          />
-        </View>
-        <View style={styles.restaurantInfoBox}>
-          <Text style={styles.title}>Pepe's Mexican Restaurant Newmarket</Text>
-          <View style={styles.address}>
-            <FontAwesome5
-              name="map-marker-alt"
-              solid
-              style={styles.addressIcon}
-            />
-            <Text style={styles.addressText}>
-              2 Mason St, North Lakes QLD 4509
-            </Text>
-          </View>
-          <View style={styles.details}>
-            <FontAwesome5 name="star" solid style={styles.scoreIcon} />
-            <Text style={styles.score}>
-              4.9 <Text style={styles.scoreAmount}>(1000+) &middot;</Text>
-            </Text>
-            <FontAwesome5 name="clock" light style={styles.clockIcon} />
-            <Text style={styles.time}>20-35 min &middot;</Text>
-            <Text style={styles.deliveryFee}>
-              delivery fee $9.5 &middot; 2.7km awayasdfsdfds
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <FlatList
+        data={testData}
+        renderItem={renderRestaurants}
+        keyExtractor={(data) => String(data.key)}
+      />
     </View>
   );
 };
