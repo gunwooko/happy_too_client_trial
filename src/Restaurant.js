@@ -1,24 +1,48 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Text, ImageBackground} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Menu from './Menu';
-import Infomation from './Infomation';
+import Information from './Information';
 import Review from './Review';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Restaurant = ({route}) => {
+const Restaurant = ({route, navigation}) => {
   const {itemId, data} = route.params;
+  const [like, setLike] = useState(false);
+
+  const triggerLike = () => {
+    setLike((prev) => !prev);
+  };
 
   return (
     <View style={styles.container}>
       <ImageBackground source={{uri: data.src}} style={styles.image}>
         <View style={styles.nav}>
-          <FontAwesome5 name="arrow-left" solid style={styles.navIconArrow} />
+          <FontAwesome5
+            name="arrow-left"
+            solid
+            style={styles.navIconArrow}
+            onPress={() => navigation.goBack()}
+          />
           <View style={styles.navIconRigth}>
-            <FontAwesome5 name="heart" regular style={styles.navIconHeart} />
+            {like ? (
+              <FontAwesome5
+                name="heart"
+                solid
+                style={styles.navIconHeart}
+                onPress={() => triggerLike()}
+              />
+            ) : (
+              <FontAwesome5
+                name="heart"
+                regular
+                style={styles.navIconHeart}
+                onPress={() => triggerLike()}
+              />
+            )}
             <FontAwesome5 name="search" solid style={styles.navIconSearch} />
           </View>
         </View>
@@ -53,7 +77,7 @@ const Restaurant = ({route}) => {
         <Tab.Navigator>
           <Tab.Screen name="Menu" component={Menu} />
           <Tab.Screen name="Review" component={Review} />
-          <Tab.Screen name="Infomation" component={Infomation} />
+          <Tab.Screen name="Infomation" component={Information} />
         </Tab.Navigator>
       </View>
     </View>

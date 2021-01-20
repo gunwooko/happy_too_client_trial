@@ -2,10 +2,10 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Infomation = () => {
+const Information = () => {
   return (
     <View style={styles.container}>
-      <Text>Infomation</Text>
+      <Text>Information</Text>
     </View>
   );
 };
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Infomation;
+export default Information;
