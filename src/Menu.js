@@ -16,7 +16,7 @@ const Menu = () => {
       <View style={styles.subContainer}>
         <Text style={styles.subContainerText}>House specials</Text>
         {houseSpecial.map((data) => (
-          <View style={styles.menusBox}>
+          <View style={styles.menusBox} key={data.title}>
             <View style={styles.contentsBox}>
               <Text style={styles.title}>{data.title}</Text>
               <Text
@@ -48,7 +48,7 @@ const Menu = () => {
       <View style={styles.subContainer}>
         <Text style={styles.subContainerText}>Main dishes</Text>
         {mainDishes.map((data) => (
-          <View style={styles.menusBox}>
+          <View style={styles.menusBox} key={data.title}>
             <View style={styles.contentsBox}>
               <Text style={styles.title}>{data.title}</Text>
               <Text
